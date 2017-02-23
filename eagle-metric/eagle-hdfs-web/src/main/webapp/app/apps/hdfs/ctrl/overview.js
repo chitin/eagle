@@ -250,32 +250,44 @@
 					$.map(res, function (data) {
 						$scope.namenodeactivenum = data.value[0];
 					});
-				});
+				}, function () {
+                    $scope.namenodeactivenum = -1;
+                });
 				HDFSMETRIC.countHadoopRole("HdfsServiceInstance", $scope.site, "standby", "namenode", ["site"], "count")._promise.then(function (res) {
 					$.map(res, function (data) {
 						$scope.namenodestandbynum = data.value[0];
 					});
-				});
+				}, function () {
+                    $scope.namenodestandbynum = -1;
+                });
 				HDFSMETRIC.countHadoopRole("HdfsServiceInstance", $scope.site, "live", "datanode", ["site"], "count")._promise.then(function (res) {
 					$.map(res, function (data) {
 						$scope.datanodehealtynum = data.value[0];
 					});
-				});
+				}, function () {
+                    $scope.datanodehealtynum = -1;
+                });
 				HDFSMETRIC.countHadoopRole("HdfsServiceInstance", $scope.site, "dead", "datanode", ["site"], "count")._promise.then(function (res) {
 					$.map(res, function (data) {
 						$scope.datanodeunhealtynum = data.value[0];
 					});
-				});
+				}, function () {
+                    $scope.datanodeunhealtynum = -1;
+                });
 				sumMetrics($scope.site, "datanode", ["site"], "sum(configuredCapacityTB)")._promise.then(function (res) {
 					$.map(res, function (data) {
 						$scope.capacityNum = data.value[0];
 					});
-				});
+				}, function () {
+                    $scope.capacityNum = -1;
+                });
 				sumMetrics($scope.site, "datanode", ["site"], "sum(usedCapacityTB)")._promise.then(function (res) {
 					$.map(res, function (data) {
 						$scope.usedCapacityNum = data.value[0];
 					});
-				});
+				}, function () {
+                    $scope.usedCapacityNum = -1;
+                });
 			};
 
 			Time.onReload(function () {

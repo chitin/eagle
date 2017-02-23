@@ -252,27 +252,36 @@
 					$.map(res, function (data) {
 						$scope.hmasteractivenum = data.value[0];
 					});
+				}, function () {
+					$scope.hmasteractivenum = -1;
 				});
 				countHBaseRole($scope.site, "standby", "hmaster", ["site"], "count")._promise.then(function (res) {
 					$.map(res, function (data) {
 						$scope.hmasterstandbynum = data.value[0];
 					});
+				}, function () {
+					$scope.hmasterstandbynum = -1;
 				});
-
 				countHBaseRole($scope.site, "live", "regionserver", ["site"], "count")._promise.then(function (res) {
 					$.map(res, function (data) {
 						$scope.regionserverhealtynum = data.value[0];
 					});
+				}, function () {
+					$scope.regionserverhealtynum = -1;
 				});
 				countHBaseRole($scope.site, "dead", "regionserver", ["site"], "count")._promise.then(function (res) {
 					$.map(res, function (data) {
 						$scope.regionserverunhealtynum = data.value[0];
 					});
+				}, function () {
+					$scope.regionserverunhealtynum = -1;
 				});
 				sumAllRegions($scope.site, "regionserver", ["site"], "sum(numRegions)")._promise.then(function (res) {
 					$.map(res, function (data) {
 						$scope.regionsnum = data.value[0];
 					});
+				}, function () {
+					$scope.regionsnum = -1;
 				});
 
 				activeMasterInfo._promise.then(function (res) {
@@ -284,8 +293,12 @@
 						host: $scope.defaultHostname
 					};
 					METRIC.hbaseMomentMetric(jobCond, "hadoop.hbase.master.server.averageload", 1).then(function (res) {
-						$scope.hmasteraverageload = (typeof res.data.obj[0] !== 'undefined') ? res.data.obj[0].value[0] : "-1";
+						$scope.hmasteraverageload = (typeof res.data.obj[0] !== 'undefined') ? res.data.obj[0].value[0] : -1;
+					}, function () {
+						$scope.hmasteraverageload = -1;
 					});
+				}, function () {
+					$scope.hmasteraverageload = -1;
 				});
 			};
 			Time.onReload(function () {
