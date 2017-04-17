@@ -91,10 +91,15 @@
             <artifactId>alert-engine</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+       <!-- <dependency>
             <groupId>org.apache.eagle</groupId>
             <artifactId>alert-spark</artifactId>
             <version>${project.version}</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming_${scala.version}</artifactId>
+            <version>${spark.core.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
