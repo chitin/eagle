@@ -1,12 +1,28 @@
-package org.apache.eagle.security.oozie.parse;
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 
+package org.apache.eagle.security.securitylog;
 import com.google.common.collect.ImmutableMap;
 import com.typesafe.config.Config;
 import org.apache.beam.runners.spark.SparkPipelineOptions;
 import org.apache.beam.runners.spark.SparkPipelineResult;
 import org.apache.beam.runners.spark.SparkRunner;
 import org.apache.beam.sdk.Pipeline;
-import org.apache.beam.sdk.coders.MapCoder;
 import org.apache.beam.sdk.coders.StringUtf8Coder;
 import org.apache.beam.sdk.io.kafka8.Kafka8IO;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
@@ -26,39 +42,29 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
-public class OozieAuditLogBeamApplication extends BeamApplication {
-    private static Logger LOG = LoggerFactory.getLogger(OozieAuditLogBeamApplication.class);
+public class HdfsAuthLogMonitoringBeamMain extends BeamApplication {
+    private static Logger LOG = LoggerFactory.getLogger(HdfsAuthLogMonitoringBeamMain.class);
     private static final String DEFAULT_CONFIG_PREFIX = "dataSourceConfig";
-    private static final String DEFAULT_CONSUMER_GROUP_ID = "eagleConsumer";
-    private static final String DEFAULT_TRANSACTION_ZK_ROOT = "/consumers";
 
     private String configPrefix = DEFAULT_CONFIG_PREFIX;
+
     private SparkPipelineResult res;
 
     @Override
     public Pipeline execute(Config config, BeamEnviroment environment) {
-
         Config context = config;
         if (this.configPrefix != null) {
             context = config.getConfig(configPrefix);
         }
+        Map<String, String> consumerProps = ImmutableMap.of(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "smallest");
 
-        Map<String, String> consumerProps = ImmutableMap.<String, String>of(
-            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "smallest"
-            //"partition.assignment.strategy", "range",
-            //"group.id", context.hasPath("consumerGroupId") ? context.getString("consumerGroupId") : DEFAULT_CONSUMER_GROUP_ID
-        );
-        // Kafka topic
         String topic = context.getString("topic");
-        // Kafka broker zk connection
-        String zkConnString = context.getString("zkConnection");
-
-        // Kafka sink broker zk connection
+        String zkConnection = context.getString("ZkConnection");
         String sinkBrokerList = config.getString("dataSinkConfig.brokerList");
         String sinkTopic = config.getString("dataSinkConfig.topic");
 
         Kafka8IO.Read<String, String> read = Kafka8IO.<String, String>read()
-            .withBootstrapServers(zkConnString)
+            .withBootstrapServers(zkConnection)
             .withTopics(Collections.singletonList(topic))
             .withKeyCoder(StringUtf8Coder.of())
             .withValueCoder(StringUtf8Coder.of())
@@ -66,18 +72,13 @@ public class OozieAuditLogBeamApplication extends BeamApplication {
 
         SparkPipelineOptions options = PipelineOptionsFactory.as(SparkPipelineOptions.class);
         Duration batchIntervalDuration = Duration.standardSeconds(5);
-        // provide a generous enough batch-interval to have everything fit in one micro-batch.
         options.setBatchIntervalMillis(batchIntervalDuration.getMillis());
-        // provide a very generous read time bound, we rely on num records bound here.
-        options.setMinReadTimeMillis(batchIntervalDuration.minus(1).getMillis());
-        // bound the read on the number of messages - 2 topics of 4 messages each.
         options.setMaxRecordsPerBatch(8L);
         options.setRunner(SparkRunner.class);
         Pipeline p = Pipeline.create(options);
 
         PCollection<KV<String, String>> deduped =
-            p.apply(read.withoutMetadata())
-                .apply(ParDo.of(new ExtractLogFn()));
+            p.apply(read.withoutMetadata()).apply(ParDo.of(new ExtractLogFn()));
 
         deduped.apply(Kafka8IO.<String, String>write()
             .withBootstrapServers(sinkBrokerList)
@@ -90,21 +91,13 @@ public class OozieAuditLogBeamApplication extends BeamApplication {
         return p;
     }
 
-    public SparkPipelineResult getRes() {
-        return res;
-    }
-
-    public void setRes(SparkPipelineResult res) {
-        this.res = res;
-    }
-
     private static class ExtractLogFn extends DoFn<KV<String, String>, KV<String, String>> {
 
         @ProcessElement
         public void processElement(ProcessContext c) throws UnsupportedEncodingException {
             String log = c.element().getValue();
-            LOG.info("--------------log " + log);
-            Map<String, String> map = (Map<String, String>) new OozieAuditLogKafkaDeserializer().deserialize(log.getBytes("UTF-8"));
+            LOG.info("--------------log "+log);
+            Map<String, String> map = (Map<String, String>)new HdfsAuthLogKafkaDeserializer().deserialize(log.getBytes("UTF-8"));
             String message = Arrays.asList(map).get(0).toString();
             c.output(KV.of("f1", message));
         }
