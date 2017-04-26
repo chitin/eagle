@@ -34,11 +34,13 @@
             <groupId>beam</groupId>
             <artifactId>javacore</artifactId>
             <version>${beam.version}</version>
+            <systemPath>${project.parent.basedir}/../../eagle-security/eagle-security-oozie-beam-auditlog/repo/beam/javacore/0.7/beam-sdks-java-core-0.7.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>beam</groupId>
             <artifactId>spark2runner</artifactId>
             <version>${beam.version}</version>
+            <systemPath>${project.parent.basedir}/../../eagle-security/eagle-security-oozie-beam-auditlog/repo/beam/spark2runner/0.7/beam-runners-spark-0.7.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
