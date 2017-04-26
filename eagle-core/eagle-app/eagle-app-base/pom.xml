@@ -31,14 +31,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.beam</groupId>
-            <artifactId>beam-sdks-java-core</artifactId>
-            <version>${beam.version}</version>
+            <groupId>beam</groupId>
+            <artifactId>javacore</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.beam</groupId>
-            <artifactId>beam-runners-spark</artifactId>
-            <version>${beam.version}</version>
+            <groupId>beam</groupId>
+            <artifactId>spark2runner</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
