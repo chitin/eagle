@@ -309,6 +309,22 @@
                 </dependency>
                 <dependency>
                     <groupId>org.apache.eagle</groupId>
+                    <artifactId>eagle-security-hdfs-beam-auditlog</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.eagle</groupId>
+                    <artifactId>eagle-security-hdfs-beam-authlog</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.eagle</groupId>
+                    <artifactId>eagle-security-hbase-beam-auditlog</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.eagle</groupId>
                     <artifactId>eagle-security-hdfs-web</artifactId>
                     <version>${project.version}</version>
                 </dependency>
