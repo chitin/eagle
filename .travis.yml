@@ -42,17 +42,16 @@ notifications:
 before_deploy:
   - source ${HOME}/apachehash
   - echo "deploying eagle-0.5.0-SNAPSHOT-bin-$APACHE_LAST_COMMIT_HASH.tar.gz to GitHub releases"
-  - mv eagle-assembly/target/eagle-0.5.0-SNAPSHOT-bin.tar.gz eagle-assembly/target/eagle-0.5.0-SNAPSHOT-bin-$APACHE_LAST_COMMIT_HASH.tar.gz
+  - mv eagle-assembly/target/eagle-0.5.0-SNAPSHOT-bin.tar.gz eagle-assembly/target/eagle-0.5.0-SNAPSHOT-bin-$TRAVIS_BRANCH.tar.gz
 deploy:
   provider: releases
   api_key: "${DLG_TOKEN}"
   file_glob: true
-  file: "eagle-assembly/target/eagle-0.5.0-SNAPSHOT-bin-${APACHE_LAST_COMMIT_HASH}.tar.gz"
+  file: "eagle-assembly/target/eagle-0.5.0-SNAPSHOT-bin-${TRAVIS_BRANCH}.tar.gz"
   skip_cleanup: true
   overwrite: true
   on:
     tags: false
-    branch: beam
 cache:
   directories:
      - $HOME/.m2
