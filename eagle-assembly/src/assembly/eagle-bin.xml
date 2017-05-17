@@ -106,5 +106,15 @@
             <directory>${project.basedir}/../eagle-external/hadoop_jmx_collector</directory>
             <outputDirectory>lib/scripts/hadoop_jmx_collector</outputDirectory>
         </fileSet>
+
+        <fileSet>
+            <directory>${project.basedir}/../eagle-core/eagle-app/eagle-app-base/repo</directory>
+            <outputDirectory>lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/../eagle-security/eagle-security-oozie-beam-auditlog/repo/beamkafka8/kafka8/2.0</directory>
+            <outputDirectory>lib</outputDirectory>
+        </fileSet>
+
     </fileSets>
 </assembly>
