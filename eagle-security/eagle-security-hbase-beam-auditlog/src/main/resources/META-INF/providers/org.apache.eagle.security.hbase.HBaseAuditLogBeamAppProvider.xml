@@ -26,6 +26,7 @@
             <displayName>dataSourceConfig.topic</displayName>
             <value>hbase_audit_log_${siteId}</value>
             <description>data source topic</description>
+            <required>true</required>
         </property>
         <property>
             <name>dataSourceConfig.zkConnection</name>
@@ -35,77 +36,11 @@
             <required>true</required>
         </property>
         <property>
-            <name>dataSourceConfig.zkConnectionTimeoutMS</name>
-            <displayName>dataSourceConfig.zkConnectionTimeoutMS</displayName>
-            <value>15000</value>
-            <description>zk connection timeout in milliseconds</description>
-        </property>
-        <property>
-            <name>dataSourceConfig.fetchSize</name>
-            <displayName>dataSourceConfig.fetchSize</displayName>
-            <value>1048586</value>
-            <description>kafka fetch size</description>
-        </property>
-        <property>
-            <name>dataSourceConfig.transactionZKRoot</name>
-            <displayName>dataSourceConfig.transactionZKRoot</displayName>
-            <value>/consumers</value>
-            <description>spout offset transaction root</description>
-        </property>
-        <property>
-            <name>dataSourceConfig.consumerGroupId</name>
-            <displayName>dataSourceConfig.consumerGroupId</displayName>
-            <value>eagle.hbaseaudit.consumer</value>
-            <description>kafka consumer group Id</description>
-        </property>
-        <property>
-            <name>dataSourceConfig.transactionStateUpdateMS</name>
-            <displayName>dataSourceConfig.transactionStateUpdateMS</displayName>
-            <value>2000</value>
-            <description>zk upate</description>
-        </property>
-        <property>
-            <name>dataSourceConfig.schemeCls</name>
-            <displayName>dataSourceConfig.schemeCls</displayName>
-            <value>storm.kafka.StringScheme</value>
-            <description>scheme class</description>
-        </property>
-        <property>
-            <name>topology.numOfSpoutTasks</name>
-            <displayName>topology.numOfSpoutTasks</displayName>
-            <value>2</value>
-            <description>number of spout tasks</description>
-        </property>
-        <property>
-            <name>topology.numOfParserTasks</name>
-            <displayName>topology.numOfParserTasks</displayName>
-            <value>2</value>
-            <description>number of parser tasks</description>
-        </property>
-        <property>
-            <name>topology.numOfJoinTasks</name>
-            <displayName>topology.numOfJoinTasks</displayName>
-            <value>2</value>
-            <description>number of external join tasks</description>
-        </property>
-        <property>
-            <name>topology.numOfSinkTasks</name>
-            <displayName>topology.numOfSinkTasks</displayName>
-            <value>2</value>
-            <description>number of sink tasks</description>
-        </property>
-        <property>
-            <name>dataEnrich.dataJoinPollIntervalSec</name>
-            <displayName>Data Join Poll Interval Sec</displayName>
-            <value>30</value>
-            <description>interval in seconds for polling</description>
-        </property>
-
-        <property>
             <name>dataSinkConfig.topic</name>
             <displayName>dataSinkConfig.topic</displayName>
             <value>hbase_audit_event_${siteId}</value>
             <description>topic for kafka data sink</description>
+            <required>true</required>
         </property>
         <property>
             <name>dataSinkConfig.brokerList</name>
@@ -115,16 +50,11 @@
             <required>true</required>
         </property>
         <property>
-            <name>dataSinkConfig.serializerClass</name>
-            <displayName>dataSinkConfig.serializerClass</displayName>
-            <value>kafka.serializer.StringEncoder</value>
-            <description>serializer class Kafka message value</description>
-        </property>
-        <property>
-            <name>dataSinkConfig.keySerializerClass</name>
-            <displayName>dataSinkConfig.keySerializerClass</displayName>
-            <value>kafka.serializer.StringEncoder</value>
-            <description>serializer class Kafka message key</description>
+            <name>autoOffsetResetConfig</name>
+            <displayName>autoOffsetResetConfig</displayName>
+            <value>largest</value>
+            <description>autoOffsetResetConfig</description>
+            <required>true</required>
         </property>
 
         <!-- properties for attribute resolver-->

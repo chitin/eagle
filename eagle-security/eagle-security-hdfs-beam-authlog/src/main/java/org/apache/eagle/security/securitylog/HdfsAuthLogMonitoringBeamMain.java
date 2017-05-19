@@ -56,7 +56,10 @@ public class HdfsAuthLogMonitoringBeamMain extends BeamApplication {
         if (this.configPrefix != null) {
             context = config.getConfig(configPrefix);
         }
-        Map<String, String> consumerProps = ImmutableMap.of(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "smallest");
+        Map<String, String> consumerProps = ImmutableMap.<String, String>of(
+            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "smallest",
+            "metadata.broker.list", config.getString("dataSinkConfig.brokerList")
+        );
 
         String topic = context.getString("topic");
         String zkConnection = context.getString("ZkConnection");
@@ -75,6 +78,14 @@ public class HdfsAuthLogMonitoringBeamMain extends BeamApplication {
         options.setBatchIntervalMillis(batchIntervalDuration.getMillis());
         options.setMaxRecordsPerBatch(8L);
         options.setRunner(SparkRunner.class);
+        if(config.hasPath("sparkRunner.checkpoint"))
+        {
+            options.setCheckpointDir(config.getString("sparkRunner.checkpoint"));
+        }
+        if(config.hasPath("sparkRunner.master"))
+        {
+            options.setSparkMaster(config.getString("sparkRunner.master"));
+        }
         Pipeline p = Pipeline.create(options);
 
         PCollection<KV<String, String>> deduped =

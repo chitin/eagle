@@ -56,7 +56,11 @@ public class HBaseAuditLogBeamApplication extends BeamApplication {
         if (this.configPrefix != null) {
             context = config.getConfig(configPrefix);
         }
-        Map<String, String> consumerProps = ImmutableMap.of(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "smallest");
+        Map<String, String> consumerProps = ImmutableMap.<String, String>of(
+            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, config.getString("autoOffsetResetConfig"),
+            "metadata.broker.list", config.getString("dataSinkConfig.brokerList")
+            //"group.id", context.hasPath("consumerGroupId") ? context.getString("consumerGroupId") : DEFAULT_CONSUMER_GROUP_ID
+        );
         String topic = context.getString("topic");
         String zkConnection = context.getString("zkConnection");
 
@@ -76,6 +80,14 @@ public class HBaseAuditLogBeamApplication extends BeamApplication {
         options.setMinReadTimeMillis(batchIntervalDuration.minus(1).getMillis());
         options.setMaxRecordsPerBatch(8L);
         options.setRunner(SparkRunner.class);
+        if(config.hasPath("sparkRunner.checkpoint"))
+        {
+            options.setCheckpointDir(config.getString("sparkRunner.checkpoint"));
+        }
+        if(config.hasPath("sparkRunner.master"))
+        {
+            options.setSparkMaster(config.getString("sparkRunner.master"));
+        }
         Pipeline p = Pipeline.create(options);
 
         DataEnrichLCM lcm = new HBaseSensitivityDataEnrichLCM(config);

@@ -44,6 +44,7 @@ public class HdfsAuditLogBeamApplication extends BeamApplication {
     private final static String TRAFFIC_MONITOR_ENABLED = "dataSinkConfig.trafficMonitorEnabled";
 
     private String configPrefix = DEFAULT_CONFIG_PREFIX;
+    private static String DEFAULT_CONSUMER_GROUP_ID = "eagleConsumers";
     private SparkPipelineResult res;
 
     public SparkPipelineResult getRes() {
@@ -60,8 +61,10 @@ public class HdfsAuditLogBeamApplication extends BeamApplication {
         if (this.configPrefix != null) {
             context = config.getConfig(configPrefix);
         }
-        Map<String, String> consumerProps = ImmutableMap.of(
-            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "smallest"
+        Map<String, String> consumerProps = ImmutableMap.<String, String>of(
+            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, config.getString("autoOffsetResetConfig"),
+            "metadata.broker.list", config.getString("dataSinkConfig.brokerList"),
+            "group.id", context.hasPath("consumerGroupId") ? context.getString("consumerGroupId") : DEFAULT_CONSUMER_GROUP_ID
         );
         String topic = context.getString("topic");
         String zkConnString = context.getString("zkConnection");
@@ -81,6 +84,14 @@ public class HdfsAuditLogBeamApplication extends BeamApplication {
         options.setMinReadTimeMillis(batchIntervalDuration.minus(1).getMillis());
         options.setMaxRecordsPerBatch(8L);
         options.setRunner(SparkRunner.class);
+        if(config.hasPath("sparkRunner.checkpoint"))
+        {
+            options.setCheckpointDir(config.getString("sparkRunner.checkpoint"));
+        }
+        if(config.hasPath("sparkRunner.master"))
+        {
+            options.setSparkMaster(config.getString("sparkRunner.master"));
+        }
         Pipeline p = Pipeline.create(options);
 
         // start external data retrieval

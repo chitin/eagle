@@ -31,10 +31,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>beam</groupId>
-            <artifactId>javacore</artifactId>
+            <groupId>org.apache.beam</groupId>
+            <artifactId>beam-sdks-java-core</artifactId>
             <version>${beam.version}</version>
             <systemPath>${project.basedir}/repo/beam-sdks-java-core-0.7.0-SNAPSHOT.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.beam</groupId>
+            <artifactId>beam-runners-core-java</artifactId>
+            <version>${beam.version}</version>
+            <systemPath>${project.basedir}/repo/beam-runners-core-java-0.7.0-SNAPSHOT.jar</systemPath>
             <scope>system</scope>
         </dependency>
         <dependency>
@@ -44,6 +51,19 @@
             <systemPath>${project.basedir}/repo/beam-runners-spark-0.7.0-SNAPSHOT.jar</systemPath>
             <scope>system</scope>
         </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.6.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro-mapred</artifactId>
+            <version>1.8.1</version>
+            <systemPath>${project.basedir}/repo/avro-1.8.1.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.google.auth</groupId>
             <artifactId>google-auth-library-credentials</artifactId>
@@ -74,6 +94,8 @@
             <artifactId>guice</artifactId>
             <version>${guice.version}</version>
         </dependency>
+
+
         <dependency>
             <groupId>com.typesafe</groupId>
             <artifactId>config</artifactId>
