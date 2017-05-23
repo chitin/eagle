@@ -71,7 +71,9 @@ public class BeamExecutionRuntime implements ExecutionRuntime<BeamEnviroment, Pi
         if (state == PipelineResult.State.RUNNING) {
             status = ApplicationEntity.Status.RUNNING;
         } else if (state == PipelineResult.State.FAILED || state == PipelineResult.State.STOPPED || state == PipelineResult.State.CANCELLED) {
-            return ApplicationEntity.Status.STOPPED;
+            return ApplicationEntity.Status.STOPPING;
+        } else if (state == PipelineResult.State.DONE) {
+            return ApplicationEntity.Status.REMOVED;
         } else {
             LOG.error("Unknown storm topology  status");
             status = ApplicationEntity.Status.UNKNOWN;

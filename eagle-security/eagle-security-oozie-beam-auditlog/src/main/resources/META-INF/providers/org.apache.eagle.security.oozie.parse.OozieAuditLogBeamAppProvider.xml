@@ -21,6 +21,13 @@
     <name>Oozie Audit Log Monitor Beam</name>
     <appClass>org.apache.eagle.security.oozie.parse.OozieAuditLogBeamApplication</appClass>
     <configuration>
+        <property>
+            <name>appId</name>
+            <displayName>Eagle App Id on beam</displayName>
+            <value>oozie_auditlog_beam</value>
+            <description>eagle app id on beam</description>
+            <required>true</required>
+        </property>
         <!-- data source configurations -->
         <property>
             <name>dataSourceConfig.topic</name>
@@ -59,18 +66,18 @@
             <description>autoOffsetResetConfig</description>
             <required>true</required>
         </property>
-        <!--<property>
+        <property>
             <name>sparkRunner.checkpoint</name>
             <displayName>Beam SparkRunner Checkpoint Path</displayName>
-            <value>hdfs://10.17.28.1/user/denglingang/beamcp</value>
+            <value>/tmp/checkpoint</value>
             <description>sparkrunner checkpoint</description>
         </property>
         <property>
             <name>sparkRunner.master</name>
             <displayName>Beam SparkRunner Master</displayName>
-            <value>spark://jqhadoop-test28-16.int.yihaodian.com:7077</value>
+            <value>local[4]</value>
             <description>sparkrunner master</description>
-        </property>-->
+        </property>
     </configuration>
     <streams>
         <stream>

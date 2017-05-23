@@ -80,14 +80,9 @@ public class HBaseAuditLogBeamApplication extends BeamApplication {
         options.setMinReadTimeMillis(batchIntervalDuration.minus(1).getMillis());
         options.setMaxRecordsPerBatch(8L);
         options.setRunner(SparkRunner.class);
-        if(config.hasPath("sparkRunner.checkpoint"))
-        {
-            options.setCheckpointDir(config.getString("sparkRunner.checkpoint"));
-        }
-        if(config.hasPath("sparkRunner.master"))
-        {
-            options.setSparkMaster(config.getString("sparkRunner.master"));
-        }
+        options.setAppName(config.getString("appId"));
+        options.setCheckpointDir(config.getString("sparkRunner.checkpoint"));
+        options.setSparkMaster(config.getString("sparkRunner.master"));
         Pipeline p = Pipeline.create(options);
 
         DataEnrichLCM lcm = new HBaseSensitivityDataEnrichLCM(config);

@@ -21,6 +21,13 @@
     <name>Hdfs Audit Log Monitor Beam</name>
     <appClass>org.apache.eagle.security.hdfs.HdfsAuditLogBeamAppProvider</appClass>
     <configuration>
+        <property>
+            <name>appId</name>
+            <displayName>Eagle App Id on beam</displayName>
+            <value>hdfs_auditlog_beam</value>
+            <description>eagle app id on beam</description>
+            <required>true</required>
+        </property>
         <!-- data source configurations -->
         <property>
             <name>dataSourceConfig.topic</name>
@@ -30,7 +37,7 @@
             <required>true</required>
         </property>
         <property>
-            <name>dataSourceConfig.zkConnection</name>
+            <name>dataSourceConfig.ZkConnection</name>
             <displayName>Kafka Zookeeper Connection</displayName>
             <value>sandbox.hortonworks.com:2181</value>
             <description>kafka zk connection</description>
@@ -59,19 +66,17 @@
             <required>true</required>
         </property>
         <property>
-            <name>consumerGroupId</name>
-            <displayName>kafka group id</displayName>
-            <value>beam-hdfs</value>
-            <description>kafka group id</description>
-            <required>true</required>
-        </property>
-
-        <!--<property>
             <name>sparkRunner.checkpoint</name>
             <displayName>Beam SparkRunner Checkpoint Path</displayName>
             <value>/user/checkpoint</value>
             <description>sparkrunner checkpoint</description>
-        </property>-->
+        </property>
+        <property>
+            <name>sparkRunner.master</name>
+            <displayName>Beam SparkRunner Master</displayName>
+            <value>local[4]</value>
+            <description>sparkrunner master</description>
+        </property>
     </configuration>
     <streams>
         <stream>

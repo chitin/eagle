@@ -210,7 +210,7 @@ public class SparkExecutionRuntime implements ExecutionRuntime<SparkEnvironment,
         ApplicationEntity.Status status;
         if (state.isFinal()) {
             LOG.info("Spark Streaming is STOPPED");
-            status = ApplicationEntity.Status.STOPPED;
+            status = ApplicationEntity.Status.REMOVED;
         } else if (state == SparkAppHandle.State.RUNNING) {
             return ApplicationEntity.Status.RUNNING;
         } else if (state == SparkAppHandle.State.CONNECTED || state == SparkAppHandle.State.SUBMITTED) {

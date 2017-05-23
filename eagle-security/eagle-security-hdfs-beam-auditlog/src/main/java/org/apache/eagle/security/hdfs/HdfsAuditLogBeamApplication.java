@@ -67,7 +67,7 @@ public class HdfsAuditLogBeamApplication extends BeamApplication {
             "group.id", context.hasPath("consumerGroupId") ? context.getString("consumerGroupId") : DEFAULT_CONSUMER_GROUP_ID
         );
         String topic = context.getString("topic");
-        String zkConnString = context.getString("zkConnection");
+        String zkConnString = context.getString("ZkConnection");
         String sinkBrokerList = config.getString("dataSinkConfig.brokerList");
         String sinkTopic = config.getString("dataSinkConfig.topic");
 
@@ -84,14 +84,9 @@ public class HdfsAuditLogBeamApplication extends BeamApplication {
         options.setMinReadTimeMillis(batchIntervalDuration.minus(1).getMillis());
         options.setMaxRecordsPerBatch(8L);
         options.setRunner(SparkRunner.class);
-        if(config.hasPath("sparkRunner.checkpoint"))
-        {
-            options.setCheckpointDir(config.getString("sparkRunner.checkpoint"));
-        }
-        if(config.hasPath("sparkRunner.master"))
-        {
-            options.setSparkMaster(config.getString("sparkRunner.master"));
-        }
+        options.setAppName(config.getString("appId"));
+        options.setCheckpointDir(config.getString("sparkRunner.checkpoint"));
+        options.setSparkMaster(config.getString("sparkRunner.master"));
         Pipeline p = Pipeline.create(options);
 
         // start external data retrieval

@@ -73,14 +73,9 @@ public class OozieAuditLogBeamApplication extends BeamApplication {
         // bound the read on the number of messages - 2 topics of 4 messages each.
         options.setMaxRecordsPerBatch(8L);
         options.setRunner(SparkRunner.class);
-        if(config.hasPath("sparkRunner.checkpoint"))
-        {
-            options.setCheckpointDir(config.getString("sparkRunner.checkpoint"));
-        }
-        if(config.hasPath("sparkRunner.master"))
-        {
-            options.setSparkMaster(config.getString("sparkRunner.master"));
-        }
+        options.setAppName(config.getString("appId"));
+        options.setCheckpointDir(config.getString("sparkRunner.checkpoint"));
+        options.setSparkMaster(config.getString("sparkRunner.master"));
         Pipeline p = Pipeline.create(options);
 
         PCollection<KV<String, String>> deduped =
