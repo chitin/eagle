@@ -77,6 +77,151 @@
             <value>local[4]</value>
             <description>sparkrunner master</description>
         </property>
+        <property>
+            <name>topology.core</name>
+            <displayName>Spark executor core</displayName>
+            <value>1</value>
+            <description>spark.executor.cores</description>
+        </property>
+        <property>
+            <name>topology.memory</name>
+            <displayName>Spark executor memory</displayName>
+            <value>5g</value>
+            <description>spark.executor.memory(1g,2g,8g)</description>
+        </property>
+        <property>
+            <name>topology.numOfRouterBolts</name>
+            <displayName>RouterBolt num</displayName>
+            <value>4</value>
+            <description>RouterBolt num</description>
+        </property>
+        <property>
+            <name>topology.numOfAlertBolts</name>
+            <displayName>AlertBolt num</displayName>
+            <value>10</value>
+            <description>AlertBolt num</description>
+            <required>true</required>
+        </property>
+        <property>
+            <name>topology.numOfPublishTasks</name>
+            <displayName>PublishTasks num</displayName>
+            <value>4</value>
+            <description>PublishTasks num</description>
+        </property>
+        <property>
+            <name>topology.master</name>
+            <displayName>Spark streaming master</displayName>
+            <value>yarn</value>
+            <description>Spark streaming master(local[4],local[*],yarn,spark://HOST:PORT)</description>
+        </property>
+        <property>
+            <name>topology.driverMemory</name>
+            <displayName>Spark driver memory</displayName>
+            <value>5g</value>
+            <description>spark.driver.memory(1b,1k,1m,1g,1t,1p)</description>
+        </property>
+        <property>
+            <name>topology.driverCores</name>
+            <displayName>Spark driver cores number</displayName>
+            <value>4</value>
+            <description>spark.driver.cores</description>
+        </property>
+        <property>
+            <name>topology.deployMode</name>
+            <displayName>Spark steaming deployMode</displayName>
+            <value>client</value>
+            <description>spark.submit.deployMode(client,cluster)</description>
+        </property>
+        <property>
+            <name>topology.groupId</name>
+            <displayName>Kafka Consumer ID</displayName>
+            <value>eagle_consumer</value>
+            <description>Kafka Consumer ID(group.id)</description>
+        </property>
+        <property>
+            <name>topology.name</name>
+            <displayName>Spark steaming app name</displayName>
+            <value>Eagle Alert Engine On SparkStreaming</value>
+            <description>Spark steaming app name</description>
+        </property>
+        <property>
+            <name>topology.dynamicAllocation</name>
+            <displayName>Spark streaming dynamicAllocation config</displayName>
+            <value>true</value>
+            <description>spark.streaming.dynamicAllocation.enable</description>
+        </property>
+        <property>
+            <name>topology.offsetreset</name>
+            <displayName>Kafka auto offset reset config</displayName>
+            <value>largest</value>
+            <description>Auto offset reset config for Kafka(largest,smallest)</description>
+        </property>
+        <property>
+            <name>metadataService.context</name>
+            <displayName>MetadataService context</displayName>
+            <value>/rest</value>
+            <description>MetadataService context</description>
+        </property>
+        <property>
+            <name>metadataService.port</name>
+            <displayName>MetadataService port</displayName>
+            <value>9090</value>
+            <description>MetadataService port</description>
+        </property>
+        <property>
+            <name>metadataService.host</name>
+            <displayName>MetadataService host</displayName>
+            <value>localhost</value>
+            <description>MetadataService host</description>
+        </property>
+        <property>
+            <name>topology.mainclass</name>
+            <displayName>Mainclass</displayName>
+            <value>org.apache.eagle.security.beam.AuditLogBeamApplicationMain</value>
+            <description>Mainclass</description>
+        </property>
+        <property>
+            <name>topology.sparkhome</name>
+            <displayName>Spark home</displayName>
+            <value>/opt/cloudera/parcels/YSPARK/lib/spark</value>
+            <description>Spark home</description>
+        </property>
+        <property>
+            <name>topology.sparkuiport</name>
+            <displayName>Spark UI port</displayName>
+            <value>4123</value>
+            <description>Spark UI port</description>
+        </property>
+        <property>
+            <name>topology.sparkconffilepath</name>
+            <displayName>Spark conf file path</displayName>
+            <value>/etc/spark/conf/spark-defaults.conf</value>
+            <description>Spark conf file path</description>
+        </property>
+        <property>
+            <name>topology.appresource</name>
+            <displayName>Spark Appresource</displayName>
+            <value>/home/tandem/eagledlg/eagle/lib/eagle-topology-0.5.0-SNAPSHOT-assembly.jar</value>
+            <description>Spark Appresource</description>
+        </property>
+        <property>
+            <name>topology.appjars</name>
+            <displayName>Spark Appjars</displayName>
+            <value>a.jar,b.jar</value>
+            <description>Spark App Jars</description>
+        </property>
+        <property>
+            <name>topology.yarnqueue</name>
+            <displayName>spark.yarn.queue</displayName>
+            <value>default</value>
+            <description>spark.yarn.queue</description>
+        </property>
+        <property>
+            <name>topology.verbose</name>
+            <displayName>Spark verbose</displayName>
+            <value>false</value>
+            <description>Spark verbose</description>
+        </property>
     </configuration>
     <streams>
         <stream>

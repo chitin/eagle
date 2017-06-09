@@ -45,16 +45,12 @@ public class AuditLogBeamApplication extends BeamApplication {
     private static Logger LOG = LoggerFactory.getLogger(AuditLogBeamApplication.class);
 
     private static final String DEFAULT_CONFIG_PREFIX = "dataSourceConfig";
-    private static final String TRAFFIC_MONITOR_ENABLED = "dataSinkConfig.trafficMonitorEnabled";
     private String configPrefix = DEFAULT_CONFIG_PREFIX;
     private static String DEFAULT_CONSUMER_GROUP_ID = "eagleConsumers";
 
     private static final String OOZIE_SYMBOL = "oozieaudit";
     private static final String HDFS_SYMBOL = "FSNamesystem.audit";
     private static final String HBASE_SYMBOL = "SecurityLogger";
-    private static final String OOZIE_FLAG = "oozie";
-    private static final String HDFS_FLAG = "hdfs";
-    private static final String HBASE_FLAG = "hbase";
 
     private SparkPipelineResult res;
     public SparkPipelineResult getRes() {
@@ -77,8 +73,7 @@ public class AuditLogBeamApplication extends BeamApplication {
         );
         String topics = context.getString("topicList");
         String zkConnString = context.getString("ZkConnection");
-        String sinkBrokerList = config.getString("dataSinkConfig.brokerList");
-        String sinkTopic = config.getString("dataSinkConfig.topic");
+
 
         Kafka8IO.Read<String, String> read = Kafka8IO.<String, String>read()
             .withBootstrapServers(zkConnString)
@@ -91,22 +86,19 @@ public class AuditLogBeamApplication extends BeamApplication {
         Duration batchIntervalDuration = Duration.standardSeconds(5);
         options.setBatchIntervalMillis(batchIntervalDuration.getMillis());
         options.setMinReadTimeMillis(batchIntervalDuration.minus(1).getMillis());
-        options.setMaxRecordsPerBatch(8L);
+        options.setMaxRecordsPerBatch(1000L);
         options.setRunner(SparkRunner.class);
         options.setAppName(config.getString("appId"));
         options.setCheckpointDir(config.getString("sparkRunner.checkpoint"));
         options.setSparkMaster(config.getString("sparkRunner.master"));
         Pipeline p = Pipeline.create(options);
 
-        PCollection<KV<String, Map<String, String>>> deduped =
-            p.apply(read.withoutMetadata()).apply(ParDo.of(new ExtractLogFn(config)))
-                .apply(ParDo.of(new SensitivityDataEnrichFn(config)));
+        String sinkBrokerList = config.getString("dataSinkConfig.brokerList");
+        String sinkTopic = config.getString("dataSinkConfig.topic");
 
-        if (config.hasPath(TRAFFIC_MONITOR_ENABLED) && config.getBoolean(TRAFFIC_MONITOR_ENABLED)) {
-            //TODO HadoopLogAccumulator
-        }
-        deduped.apply(ParDo.of(new IPZoneDataEnrichFn(config)))
-            .apply(Kafka8IO.<String, String>write()
+        PCollection<KV<String, String>> deduped =
+            p.apply(read.withoutMetadata()).apply(ParDo.of(new ExtractLogFn(config)));
+        deduped.apply(Kafka8IO.<String, String>write()
                 .withBootstrapServers(sinkBrokerList)
                 .withTopic(sinkTopic)
                 .withKeyCoder(StringUtf8Coder.of())
@@ -114,7 +106,7 @@ public class AuditLogBeamApplication extends BeamApplication {
         return p;
     }
 
-    private static class ExtractLogFn extends DoFn<KV<String, String>, KV<String, Map<String, String>>> {
+    private static class ExtractLogFn extends DoFn<KV<String, String>, KV<String, String>> {
         private Config config;
 
         public ExtractLogFn(Config config) {
@@ -126,21 +118,28 @@ public class AuditLogBeamApplication extends BeamApplication {
             String log = c.element().getValue();
             Map<String, String> map;
             LOG.info("--------------------log " + log);
-            if(log.contains(OOZIE_SYMBOL)) {
+            if (log.contains(OOZIE_SYMBOL)) {
                 map = (Map<String, String>) new OozieAuditLogKafkaDeserializer().deserialize(log.getBytes("UTF-8"));
-                c.output(KV.of(OOZIE_FLAG, map));
-            } else if(log.contains(HDFS_SYMBOL)) {
+                if (map != null) {
+                    c.output(KV.of(map.get("user"), map.toString()));
+                }
+            } else if (log.contains(HDFS_SYMBOL)) {
                 map = (Map<String, String>) new HdfsAuditLogKafkaDeserializer(config).deserialize(log.getBytes("UTF-8"));
-                c.output(KV.of(HDFS_FLAG, map));
-            } else if(log.contains(HBASE_SYMBOL)) {
+                if (map != null) {
+                    c.output(KV.of(map.get("user"), map.toString()));
+                }
+            } else if (log.contains(HBASE_SYMBOL)) {
                 map = (Map<String, String>) new HBaseAuditLogKafkaDeseralizer().deserialize(log.getBytes("UTF-8"));
-                c.output(KV.of(HBASE_FLAG, map));
+                if (map != null) {
+                    c.output(KV.of(map.get("user"), map.toString()));
+                }
             } else {
                 LOG.error("Fail to parse log: " + log);
             }
         }
     }
 
+    /**
     private static class SensitivityDataEnrichFn extends DoFn<KV<String, Map<String, String>>, KV<String, Map<String, String>>> {
         private DataEnrichLCM lcm;
         private Config config;
@@ -259,4 +258,5 @@ public class AuditLogBeamApplication extends BeamApplication {
             throw new IllegalStateException(ex);
         }
     }
+        **/
 }

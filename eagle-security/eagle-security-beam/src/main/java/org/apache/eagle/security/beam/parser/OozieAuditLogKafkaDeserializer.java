@@ -45,7 +45,7 @@ public class OozieAuditLogKafkaDeserializer implements SpoutKafkaMessageDeserial
         }
         if (entity == null) {
             LOG.warn("Event ignored as it can't be correctly parsed, the log is ", logLine);
-            return new HashMap<>();
+            return null;
         }
         Map<String, Object> map = new TreeMap<String, Object>();
         map.put("timestamp", String.valueOf(entity.timestamp));
