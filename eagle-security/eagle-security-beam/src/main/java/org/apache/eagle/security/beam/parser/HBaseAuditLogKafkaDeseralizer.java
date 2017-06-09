@@ -25,7 +25,7 @@ public class HBaseAuditLogKafkaDeseralizer implements SpoutKafkaMessageDeseriali
         }
         if (entity == null) {
             LOG.warn("Event ignored as it can't be correctly parsed, the log is " + logLine);
-            return new HashMap<>();
+            return null;
         }
         Map<String, String> map = new TreeMap<>();
         map.put("action", entity.action);
