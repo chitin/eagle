@@ -49,9 +49,11 @@ public class AuditLogBeamApplication extends BeamApplication {
     private String configPrefix = DEFAULT_CONFIG_PREFIX;
     private static String DEFAULT_CONSUMER_GROUP_ID = "eagleConsumers";
 
+
     private static final String OOZIE_SYMBOL = "oozie_log";
     private static final String HDFS_SYMBOL = "hdfs_log";
     private static final String HBASE_SYMBOL = "hbase_log";
+
 
     private SparkPipelineResult res;
     public SparkPipelineResult getRes() {
@@ -106,6 +108,7 @@ public class AuditLogBeamApplication extends BeamApplication {
                 .withValueCoder(StringUtf8Coder.of()).updateProducerProperties(ImmutableMap.of("bootstrap.servers", sinkBrokerList)));
         return p;
     }
+
 
     private static class CleanLogFn extends  DoFn<KV<String, String>, KV<String, String>> {
         @ProcessElement
